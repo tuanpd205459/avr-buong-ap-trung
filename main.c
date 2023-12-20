@@ -27,9 +27,14 @@ static uint8_t hourTimeToHatch;
 static uint8_t minTimeToHatch;
 static uint8_t tempHatch = 34;
 static float currentTemp;
-// Process state [0]: waiting, [1]: hatching, [2]: hatched, [3]: configuring
-static uint8_t prState = 0;
 unsigned long currentMillis;
+enum State{
+	WAITING,
+	HATCHING,
+	HATCHED,
+	CONFIGURING,
+	};
+static enum State prState;
 
 #define millisWaiting 1000
 #define millisHatching 1000
@@ -118,15 +123,15 @@ int main(void) {
 		}
 		setTimeToHatch();
 		setTempHatch();
-		prState = 1;  // Hatching State
+		prState = HATCHING;  // Hatching State
 
 		currentMillis = millis();
-		while (prState == 1) {
+		while (prState == HATCHING) {
 			if ((millis() - currentMillis) >= millisHatching) {
 				currentMillis = millis();
 				if (minTimeToHatch == 0)
 				if (hourTimeToHatch == 0)
-				if (dayTimeToHatch == 0) prState = 2;
+				if (dayTimeToHatch == 0) prState = HATCHED;
 				else {
 					dayTimeToHatch--;
 					hourTimeToHatch = 23;
@@ -148,11 +153,8 @@ int main(void) {
 		// Hatched State
 		updateDisplay();
 
-		if (prState == 2) {
-			myDigitalWrite(lightHatcher, HIGH);
-		}
 		currentMillis = millis();
-		while (prState == 2) {
+		while (prState == HATCHED) {
 			while (debounce(middleButton) == 1) {
 				if (millis() - currentMillis >= millisAlarm) {
 					// Turn on Buzzer 2s
@@ -166,7 +168,7 @@ int main(void) {
 					currentMillis = millis();
 				}
 			}
-			prState = 3;
+			prState = CONFIGURING;
 		}
 	}
 	return 0;
@@ -217,7 +219,7 @@ void updateDisplayTemp() {
 }
 
 void updateDisplay() {
-	if (prState < 3) {
+	if (prState < CONFIGURING) {
 		lcd_clrscr();
 		lcd_gotoxy(0, 0);
 		lcd_puts("BUONG AP TRUNG");
