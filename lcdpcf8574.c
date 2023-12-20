@@ -1,11 +1,4 @@
-/*
-lcdpcf8574 lib 0x03
 
-copyright (c) Davide Gironi, 2013
-
-Released under GPLv3.
-Please refer to LICENSE file for licensing information.
-*/
 #define F_CPU 16000000UL
 #include <inttypes.h>
 #include <avr/io.h>
