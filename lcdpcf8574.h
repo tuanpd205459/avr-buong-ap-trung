@@ -1,16 +1,4 @@
-/*
-lcdpcf8574 lib 0x03
 
-copyright (c) Davide Gironi, 2013
-
-Released under GPLv3.
-Please refer to LICENSE file for licensing information.
-
-References:
-  + based on lcd library by Peter Fleury
-    http://jump.to/fleury
-  + CGRAM functions by P�ter Papp
-*/
 
 
 #ifndef LCD_H
